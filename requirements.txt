@@ -1,0 +1,11 @@
+R-packages:
+dplyr
+ape
+rotl
+phytools
+expm
+readxl
+RCy3
+
+BirdFuncDat.txt can be found on: https://figshare.com/articles/dataset/Data_Paper_Data_Paper/3559887?backTo=%2Fcollections%2FEltonTraits_1_0_Species-level_foraging_attributes_of_the_world_s_birds_and_mammals%2F3306933&file=5631081
+Birdbase can be found on: https://springernature.figshare.com/articles/dataset/BIRDBASE_A_Global_Database_of_Avian_Biogeography_Conservation_Ecology_and_Life_History_Traits/27051040?file=55634729
