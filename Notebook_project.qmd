@@ -1,0 +1,67 @@
+---
+title: Network Biology project
+engine: knitr
+---
+
+```{r}
+library(readr)
+library(dplyr)
+library(ape)
+library(rotl)
+library(phytools)
+library(expm)
+library(readxl)
+library(RCy3)
+source("helper_functions.r")
+```
+
+```{r}
+# loading of the trait data and set target family
+birdbase <- read_excel("BIRDBASE%20v2025.1%20Sekercioglu%20et%20al.%20Final.xlsx", skip = 1)
+bird <- read_tsv("BirdFuncDat.txt",col_names  = TRUE)
+fam1 <- "Phasianidae"   
+fam2 <- "Anatidae"    
+```
+
+```{r}
+phy_fas <- build_pruned_family_tree(bird, fam1, n_keep = 500, seed = 123)
+phy_ana <- build_pruned_family_tree(bird, fam2, n_keep = 400, seed = 123)
+
+par(mfrow = c(1,2))
+plot(phy_fas, main = fam1, cex = .35)
+plot(phy_ana, main = fam2, cex = .35)
+par(mfrow = c(1,1))
+```
+
+```{r}
+aligned_fas <- align_traits(phy_fas, birdbase, "Primary Diet", "IOC World Bird List (v15.1)")
+aligned_ana <- align_traits(phy_ana, birdbase, "Primary Diet", "IOC World Bird List (v15.1)")
+```
+
+```{r}
+pf <- prep_tree_trait(aligned_fas$phy, aligned_fas$trait)
+pa <- prep_tree_trait(aligned_ana$phy, aligned_ana$trait)
+```
+
+```{r}
+# 1) Phasianidae — phylogeny × diet (alpha ~ 0.5)
+res_fas_x <- build_edges_nodes(pf$phy, pf$trait, alpha = 0.50, k = 13)
+send_to_cyto(res_fas_x$nodes, res_fas_x$edges,
+             title = "Phasianidae_phylo×diet_a=0.50_k=13")
+
+# 2) Phasianidae — phylogeny only (alpha = 1)
+res_fas_p <- build_edges_nodes(pf$phy, pf$trait, alpha = 1.00, k = 13)
+send_to_cyto(res_fas_p$nodes, res_fas_p$edges,
+             title = "Phasianidae_phylogeny_only_k=13")
+
+# 3) Anatidae — phylogeny × diet
+res_ana_x <- build_edges_nodes(pa$phy, pa$trait, alpha = 0.50, k = 14)
+send_to_cyto(res_ana_x$nodes, res_ana_x$edges,
+             title = "Anatidae_phylo×diet_a=0.50_k=14")
+
+# 4) Anatidae — phylogeny only
+res_ana_p <- build_edges_nodes(pa$phy, pa$trait, alpha = 1.00, k = 14)
+send_to_cyto(res_ana_p$nodes, res_ana_p$edges,
+             title = "Anatidae_phylogeny_only_k=14")
+```
+
